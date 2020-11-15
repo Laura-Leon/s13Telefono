@@ -39,7 +39,7 @@ private Button ingresarbtn;
                 String username = EditUser.getText().toString();
                 //  i.putExtra("username", username);
                 SharedPreferences preference = getSharedPreferences("usuarios", MODE_PRIVATE);
-                preference.edit().putString("username", username).apply();
+                preference.edit().putString("usuarios", username).apply();
                 startActivity(i);
 
 

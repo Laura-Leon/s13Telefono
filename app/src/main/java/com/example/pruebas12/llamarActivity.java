@@ -2,7 +2,9 @@ package com.example.pruebas12;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -37,19 +39,24 @@ public class llamarActivity extends AppCompatActivity implements View.OnClickLis
         agregarbtn = findViewById(R.id.agregarbtn);
         EditNombre = findViewById(R.id.EditNombre);
         EditTelefono = findViewById(R.id.EditTelefono);
-        db = FirebaseDatabase.getInstance();
-        miUsuario =getSharedPreferences("users", MODE_PRIVATE).getString("username", "NO_USERNAME");
 
-adapter = new ContactoAdapter();
-listaContactos.setAdapter(adapter);
+
+
+        ActivityCompat.requestPermissions(this, new String[] {
+                Manifest.permission.CALL_PHONE,
+        },  1);
+
+        miUsuario = getSharedPreferences("usuarios", MODE_PRIVATE).getString("usuarios", "NO_USERNAME");
+        adapter = new ContactoAdapter();
+        listaContactos.setAdapter(adapter);
         agregarbtn.setOnClickListener(this);
 
-
+        db = FirebaseDatabase.getInstance();
         loadDatabase();
     }
 
     private void loadDatabase(){
-        DatabaseReference ref = db.getReference().child("users");
+        DatabaseReference ref = db.getReference().child("usuarios");
         ref.addValueEventListener(
                 new ValueEventListener() {
                     @Override
@@ -76,11 +83,10 @@ listaContactos.setAdapter(adapter);
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.agregarbtn:
-                String id = db.getReference().child("usuario").push().getKey();
-                String nombres = EditNombre.getText().toString();
-                String telefonos = EditTelefono.getText().toString();
 
-                DatabaseReference references = db.getReference().child("users").child(id);
+                String id = db.getReference().child("usuarios").push().getKey();
+
+                DatabaseReference references = db.getReference().child("usuarios").child(id);
 
                 Contacto contacto = new Contacto(EditNombre.getText().toString(), EditTelefono.getText().toString());
                 references.setValue(contacto);
